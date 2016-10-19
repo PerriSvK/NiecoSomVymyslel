@@ -66,9 +66,7 @@ public class Level implements KeyListener
             int tx = (int) Math.round((test.get(i)+Math.cos(Math.toRadians(degAngle))*Constants.SPEED_CLOVEK*(delta/(float)1000)) / Constants.SCALE_MAP);
             int ty = (int) Math.round((test.get(i+1)+Math.sin(Math.toRadians(degAngle))*Constants.SPEED_CLOVEK*(delta/(float)1000)) / Constants.SCALE_MAP);
             if(tx < 0 || tx > dataT.getWidth() || ty < 0 || ty > dataT.getHeight())
-            {
                 return false;
-            }
 
             if(!dataT.getColor(tx, ty).equals(Color.black))
             {
