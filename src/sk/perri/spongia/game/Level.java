@@ -27,7 +27,7 @@ public class Level implements KeyListener
             e.printStackTrace();
         }
 
-        ja = new Clovek(1500, 800, "ROBOTIK", "PAN.png");
+        ja = new Clovek((int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(800*Constants.SCALE_MAP), "ROBOTIK", "r", 8);
         camera = new Camera(ja);
     }
 
@@ -48,7 +48,10 @@ public class Level implements KeyListener
         }
 
         if(ang != -1 && canGo(ang, delta))
+        {
             ja.move(ang, delta);
+            ja.setTexture(ang / 45);
+        }
         camera.update();
     }
     
@@ -58,12 +61,10 @@ public class Level implements KeyListener
         
         boolean vys = true;
         
-        for(int i = 0; i < 6; i+=2)
+        for(int i = 0; i < test.size(); i+=2)
         {
             int tx = (int) Math.round((test.get(i)+Math.cos(Math.toRadians(degAngle))*Constants.SPEED_CLOVEK*(delta/(float)1000)) / Constants.SCALE_MAP);
             int ty = (int) Math.round((test.get(i+1)+Math.sin(Math.toRadians(degAngle))*Constants.SPEED_CLOVEK*(delta/(float)1000)) / Constants.SCALE_MAP);
-            Constants.print("PLAYER X:", ja.getX(), "Y:", ja.getY(), "W:",ja.getTexture().getWidth(), "H:",
-                    ja.getTexture().getHeight(), "DATA X:", tx, "Y:", ty);
             if(tx < 0 || tx > dataT.getWidth() || ty < 0 || ty > dataT.getHeight())
             {
                 return false;
@@ -71,13 +72,11 @@ public class Level implements KeyListener
 
             if(!dataT.getColor(tx, ty).equals(Color.black))
             {
+
                 vys = false;
-                Constants.print("BAD COLOR AT I:", i, "X:", tx, "Y:", ty, "COLOR:", dataT.getColor(tx, ty));
                 break;
             }
         }
-
-        Constants.print("RETURN:", vys);
         return vys;
     }
 
