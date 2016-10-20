@@ -4,6 +4,8 @@ import org.newdawn.slick.*;
 import sk.perri.spongia.utils.Camera;
 import sk.perri.spongia.utils.Constants;
 import sk.perri.spongia.veci.Clovek;
+import sk.perri.spongia.veci.Entit;
+import sk.perri.spongia.veci.Vec;
 
 import java.util.Vector;
 
@@ -12,7 +14,10 @@ public class Level implements KeyListener
     private Image dataT, bgT;
     private Clovek ja;
     private Camera camera;
+    private Vector<Vec> vec = new Vector<>();
     private int keyState = 0;
+    private boolean boosted = false;
+    private boolean ePressed = false;
 
     public Level(String mapName)
     {
@@ -29,6 +34,7 @@ public class Level implements KeyListener
 
         ja = new Clovek((int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(800*Constants.SCALE_MAP), "ROBOTIK", "r", 8);
         camera = new Camera(ja);
+        vec.add(new Vec((int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(850*Constants.SCALE_MAP), Vec.DREVO, "drevo.png"));
     }
 
     public void update(GameContainer gc, long delta)
@@ -49,10 +55,32 @@ public class Level implements KeyListener
 
         if(ang != -1 && canGo(ang, delta))
         {
-            ja.move(ang, delta);
+            ja.move(ang, delta, boosted);
             ja.setTexture(ang / 45);
+            ja.setVisibility(true);
         }
+
+        if(ePressed)
+        {
+            checkCollisions();
+        }
+
         camera.update();
+    }
+
+    public void checkCollisions()
+    {
+        Constants.print("Level, test colide, picking up, vec:", vec.size());
+        for(int i = 0; i < vec.size(); i++)
+        {
+            if(Entit.collide(ja, vec.get(i)))
+            {
+                Constants.print("Level, colide, picking up, vec:", vec.size());
+                ja.getInv().add(vec.get(i));
+                vec.get(i).setVisibility(false);
+                vec.remove(i);
+            }
+        }
     }
     
     public boolean canGo(double degAngle, long delta)
@@ -81,32 +109,41 @@ public class Level implements KeyListener
     @Override
     public void keyPressed(int key, char c)
     {
+
         switch(key)
         {
             case Constants.CONTROL_UP: keyState += 1; break;
             case Constants.CONTROL_DOWN: keyState -= 1; break;
             case Constants.CONTROL_RIGHT: keyState += 3; break;
             case Constants.CONTROL_LEFT: keyState -= 3; break;
+            case Constants.CONTROL_SPEED: boosted = true; break;
+            case Constants.CONTROL_USE: ePressed = true; break;
         }
     }
 
     @Override
     public void keyReleased(int key, char c)
     {
-        Constants.print("Level, key released:", key);
         switch(key)
         {
             case Constants.CONTROL_UP: keyState -= 1; break;
             case Constants.CONTROL_DOWN: keyState += 1; break;
             case Constants.CONTROL_RIGHT: keyState -= 3; break;
             case Constants.CONTROL_LEFT: keyState += 3; break;
+            case Constants.CONTROL_SPEED: boosted = false; break;
+            case Constants.CONTROL_RESET: ja.setPos((int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(800*Constants.SCALE_MAP)); camera.update(); break;
+            case Constants.CONTROL_USE: ePressed = false; break;
         }
     }
 
     public void render(Graphics g)
     {
         bgT.draw(-camera.getX(), -camera.getY(), Constants.SCALE_MAP);
+        for(Vec v : vec)
+            v.render(camera);
+
         ja.render(camera);
+        ja.getInv().drawStatus(g);
     }
 
     @Override

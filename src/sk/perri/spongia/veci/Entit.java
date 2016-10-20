@@ -16,8 +16,8 @@ public class Entit
     public static final int STAVBA = 2;
 
     private double x, y;
-    private int typ;
-    private boolean visible;
+    public int typ;
+    private boolean visible = true;
     private boolean pickable;
     private boolean multi = false;
     private int noTexture = 0;
@@ -49,6 +49,10 @@ public class Entit
         if(typ == CLOVEK)
         {
             scale = Constants.SCALE_PAN;
+        }
+        else if(typ == VEC)
+        {
+            scale = Constants.SCALE_VEC;
         }
     }
 
@@ -87,6 +91,9 @@ public class Entit
 
     public void render(Camera cam)
     {
+        if(!visible)
+            return;
+
         if(multi)
         {
             textures.get(noTexture).draw(Math.round(x-cam.getX()), Math.round(y-cam.getY()), scale);
@@ -115,11 +122,51 @@ public class Entit
 
     public Image getTexture()
     {
-        Constants.print("Ent, noTexture:", noTexture, "multi:", multi, textures.size());
         if(multi)
             return textures.get(noTexture);
 
         return texture;
     }
 
+    public float getScale()
+    {
+        return scale;
+    }
+
+    public void setVisibility(boolean visible)
+    {
+        this.visible = visible;
+    }
+
+    public boolean isVisible()
+    {
+        return visible;
+    }
+
+    public static boolean collide(Entit e1, Entit e2)
+    {
+        boolean coll = false;
+        if((e1.getX() < e2.getX() && e2.getX() < e1.getX()+e1.getTexture().getWidth()*e1.getScale()) ||
+                (e2.getX() < e1.getX() && e1.getX() < e2.getX()+e2.getTexture().getWidth()*e2.getScale()))
+            if((e1.getY() < e2.getY() && e2.getY() < e1.getY()+e1.getTexture().getHeight()*e1.getScale()) ||
+                    (e2.getY() < e1.getY() && e1.getY() < e2.getY()+e2.getTexture().getHeight()*e2.getScale()))
+                coll = true;
+        /*if(e2.getY() - e1.getY() > 0)
+        {
+            if (e2.getY() - e1.getY() < e1.getTexture().getHeight() * e1.getScale() &&
+                    e2.getX() - e1.getX() < e1.getTexture().getWidth() * e1.getScale())
+                coll = true;
+        }
+        else
+        {
+            if (e1.getY() - e2.getY() < e2.getTexture().getHeight() * e2.getScale() &&
+                    e1.getX() - e2.getX() < e2.getTexture().getWidth() * e2.getScale())
+                coll = true;
+        }*/
+        Constants.print("Entit, return coll:", coll, "e1 X:", e1.getX(), "Y:", e1.getY(), "W:",
+                e1.getTexture().getWidth()*e1.getScale(), "H:", e1.getTexture().getHeight()*e1.getScale(),
+                "e2 X:", e2.getX(), "Y:", e2.getY(), "W:",
+                e2.getTexture().getWidth()*e2.getScale(), "H:", e2.getTexture().getHeight()*e2.getScale());
+        return coll;
+    }
 }

@@ -3,11 +3,14 @@ package sk.perri.spongia.veci;
 import sk.perri.spongia.utils.Constants;
 
 import java.util.Vector;
+import java.util.concurrent.CompletionService;
 
 public class Clovek extends Entit
 {
     private String name;
     private int LDX, LDY, RDX, RDY, CDX, CDY, RCX, RCY, RUX, RUY, CUX, CUY, LUX, LUY, LCX, LCY;
+    private Inventory inv;
+
 
     public Clovek(int x, int y, String name, String textureName)
     {
@@ -49,12 +52,19 @@ public class Clovek extends Entit
         LUY = (int)getY();
         LCX = (int)getX();
         LCY = (int)getY() + Math.round(getTexture().getHeight() /2*Constants.SCALE_PAN);
+        inv = new Inventory(10);
     }
 
-    public void move(double degAngle, long delta)
+    public Inventory getInv()
     {
-        super.setPos(getX()+Math.cos(Math.toRadians(degAngle))*Constants.SPEED_CLOVEK*delta/(float)1000,
-                getY()+Math.sin(Math.toRadians(degAngle))*Constants.SPEED_CLOVEK*delta/(float)1000);
+        return inv;
+    }
+
+    public void move(double degAngle, long delta, boolean boosted)
+    {
+        float speed = boosted ? Constants.SPEED_BOOST_CLOVEK : Constants.SPEED_CLOVEK;
+        super.setPos(getX()+Math.cos(Math.toRadians(degAngle))*speed*delta/(float)1000,
+                getY()+Math.sin(Math.toRadians(degAngle))*speed*delta/(float)1000);
 
         LDX = (int)getX();
         LDY = (int)getY() + Math.round(getTexture().getHeight()*Constants.SCALE_PAN);
@@ -94,5 +104,27 @@ public class Clovek extends Entit
         res.add(LCX);
         res.add(LCY);
         return res;
+    }
+
+    @Override
+    public void setPos(double x, double y)
+    {
+        super.setPos(x, y);
+        LDX = (int)getX();
+        LDY = (int)getY() + Math.round(getTexture().getHeight()*Constants.SCALE_PAN);
+        CDX = (int)getX() + Math.round(getTexture().getWidth() / 2*Constants.SCALE_PAN);
+        CDY = (int)getY() + Math.round(getTexture().getHeight()*Constants.SCALE_PAN);
+        RDX = (int)getX() + Math.round(getTexture().getWidth()*Constants.SCALE_PAN);
+        RDY = (int)getY() + Math.round(getTexture().getHeight()*Constants.SCALE_PAN);
+        RCX = (int)getX() + Math.round(getTexture().getWidth()*Constants.SCALE_PAN);
+        RCY = (int)getY() + Math.round(getTexture().getHeight() /2*Constants.SCALE_PAN);
+        RUX = (int)getX() + Math.round(getTexture().getWidth()*Constants.SCALE_PAN);
+        RUY = (int)getY();
+        CUX = (int)getX() + Math.round(getTexture().getWidth() / 2*Constants.SCALE_PAN);
+        CUY = (int)getY();
+        LUX = (int)getX();
+        LUY = (int)getY();
+        LCX = (int)getX();
+        LCY = (int)getY() + Math.round(getTexture().getHeight() /2*Constants.SCALE_PAN);
     }
 }

@@ -16,7 +16,7 @@ public class Main extends BasicGame
     @Override
     public void init(GameContainer container) throws SlickException
     {
-        level = new Level("map7");
+        level = new Level("map3");
     }
 
     @Override

@@ -11,9 +11,11 @@ public class Constants
 
     public static final String ASSETS_PATH = "/assets/";
 
-    public static final float SCALE_MAP = 1.4f;
-    public static final float SCALE_PAN = 0.1f;
+    public static final float SCALE_MAP = 2f;
+    public static final float SCALE_PAN = 0.2f;
+    public static final float SCALE_VEC = 0.1f;
     public static final float SPEED_CLOVEK = 100.0f;
+    public static final float SPEED_BOOST_CLOVEK = 500.0f;
 
     public static final Color COLOR_STAND = Color.black;
 
@@ -21,6 +23,9 @@ public class Constants
     public static final int CONTROL_DOWN = Input.KEY_S;
     public static final int CONTROL_RIGHT = Input.KEY_D;
     public static final int CONTROL_LEFT = Input.KEY_A;
+    public static final int CONTROL_SPEED = Input.KEY_LCONTROL;
+    public static final int CONTROL_RESET = Input.KEY_R;
+    public static final int CONTROL_USE = Input.KEY_E;
 
     public static void print(Object... o)
     {
@@ -31,4 +36,6 @@ public class Constants
 
         System.out.println(res);
     }
+
+
 }
