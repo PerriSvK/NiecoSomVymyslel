@@ -163,10 +163,10 @@ public class Entit
                     e1.getX() - e2.getX() < e2.getTexture().getWidth() * e2.getScale())
                 coll = true;
         }*/
-        Constants.print("Entit, return coll:", coll, "e1 X:", e1.getX(), "Y:", e1.getY(), "W:",
+        /*Constants.print("Entit, return coll:", coll, "e1 X:", e1.getX(), "Y:", e1.getY(), "W:",
                 e1.getTexture().getWidth()*e1.getScale(), "H:", e1.getTexture().getHeight()*e1.getScale(),
                 "e2 X:", e2.getX(), "Y:", e2.getY(), "W:",
-                e2.getTexture().getWidth()*e2.getScale(), "H:", e2.getTexture().getHeight()*e2.getScale());
+                e2.getTexture().getWidth()*e2.getScale(), "H:", e2.getTexture().getHeight()*e2.getScale());*/
         return coll;
     }
 }

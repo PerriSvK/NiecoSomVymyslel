@@ -17,18 +17,36 @@ public class Inventory
         this.capacity = capacity;
     }
 
-    public boolean add(Entit entit)
+    public boolean add(Vec entit)
     {
         if(isIn == capacity)
             return false;
 
+
+        Constants.print("INV, entit typ:", entit.getTyp(), "stacks no:", stacky.size());
         if(isEmpty())
         {
-            stacky.add(new Stack(entit.typ, 1));
+            stacky.add(new Stack(entit.getTyp(), 1));
         }
         else
         {
-            stacky.stream().filter(s -> s.typ == entit.typ).forEach(s -> s.add(1));
+            boolean fo = false;
+            for(int i = 0; i < stacky.size(); i++)
+            {
+                Stack s = stacky.get(i);
+                if(s.typ == entit.getTyp())
+                {
+                    s.add(1);
+                    fo = true;
+                    break;
+                }
+            }
+
+            if(!fo)
+            {
+                stacky.add(new Stack(entit.getTyp(), 1));
+                Constants.print("create new stack:", entit.getTyp());
+            }
         }
 
         inside.add(entit);

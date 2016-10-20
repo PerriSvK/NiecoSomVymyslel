@@ -5,6 +5,7 @@ import sk.perri.spongia.utils.Camera;
 import sk.perri.spongia.utils.Constants;
 import sk.perri.spongia.veci.Clovek;
 import sk.perri.spongia.veci.Entit;
+import sk.perri.spongia.veci.Spawn;
 import sk.perri.spongia.veci.Vec;
 
 import java.util.Vector;
@@ -14,10 +15,12 @@ public class Level implements KeyListener
     private Image dataT, bgT;
     private Clovek ja;
     private Camera camera;
+    private Spawn spawn, spawn1;
     private Vector<Vec> vec = new Vector<>();
     private int keyState = 0;
     private boolean boosted = false;
     private boolean ePressed = false;
+    private float time = 0;
 
     public Level(String mapName)
     {
@@ -34,7 +37,11 @@ public class Level implements KeyListener
 
         ja = new Clovek((int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(800*Constants.SCALE_MAP), "ROBOTIK", "r", 8);
         camera = new Camera(ja);
-        vec.add(new Vec((int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(850*Constants.SCALE_MAP), Vec.DREVO, "drevo.png"));
+        spawn = new Spawn(Vec.DREVO, (int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(900*Constants.SCALE_MAP),
+                (int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(1000*Constants.SCALE_MAP), 4000);
+        spawn1 = new Spawn(Vec.ZELEZO, (int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(900*Constants.SCALE_MAP),
+                (int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(1000*Constants.SCALE_MAP), 5000);
+        //vec.add(new Vec((int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(850*Constants.SCALE_MAP), Vec.DREVO, "drevo.png"));
     }
 
     public void update(GameContainer gc, long delta)
@@ -66,16 +73,37 @@ public class Level implements KeyListener
         }
 
         camera.update();
+
+        Vec v = spawn.update(delta);
+        if(v != null)
+        {
+            vec.add(v);
+            v = null;
+        }
+
+        v = spawn1.update(delta);
+        if(v != null)
+        {
+            vec.add(v);
+            v = null;
+        }
+        if(Math.floor(time + delta / (float)1000) > Math.floor(time))
+            Constants.print("time:", time);
+
+        time += delta/(float)1000;
     }
 
     public void checkCollisions()
     {
-        Constants.print("Level, test colide, picking up, vec:", vec.size());
+        /*Constants.print("Level, test colide, picking up, vec:", vec.size());*/
         for(int i = 0; i < vec.size(); i++)
         {
+            if(ja.getInv().isFull())
+                break;
+
             if(Entit.collide(ja, vec.get(i)))
             {
-                Constants.print("Level, colide, picking up, vec:", vec.size());
+                /*Constants.print("Level, colide, picking up, vec:", vec.size());*/
                 ja.getInv().add(vec.get(i));
                 vec.get(i).setVisibility(false);
                 vec.remove(i);
