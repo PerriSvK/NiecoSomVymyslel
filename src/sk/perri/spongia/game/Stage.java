@@ -1,6 +1,6 @@
 package sk.perri.spongia.game;
 
-import org.lwjgl.Sys;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import sk.perri.spongia.utils.Camera;
@@ -19,7 +19,7 @@ public class Stage
     private boolean active = false;
     private float stageLocationX, stageLocationY, stageLocationR;
     private Camera cam;
-    Image quest;
+    private Image quest;
 
     public Stage(float slx, float sty, float radius, boolean active, Camera cam)
     {
@@ -44,12 +44,7 @@ public class Stage
     {
         double a = Math.pow(stageLocationX-x, 2);
         double b = Math.pow(stageLocationY-y, 2);
-        boolean isin = a + b <= Math.pow(stageLocationR, 2);
-        if(isin)
-        {
-            Constants.print("IS IN! a:", a, "b:", b, "c:", Math.pow(stageLocationR, 2));
-        }
-        return isin;
+        return a + b <= Math.pow(stageLocationR, 2);
     }
 
     public void activate()
@@ -98,8 +93,6 @@ public class Stage
         /*Set<Integer> poc = inv.contains(uloha.keySet());
         Integer[] poca = new Integer[poc.size()];
         poc.toArray(poca);*/
-        int i = 0;
-        Constants.print("Check");
         for(Map.Entry<Integer, Integer> en : uloha.entrySet())
         {
             int poc = inv.contains(en.getKey());
@@ -107,13 +100,10 @@ public class Stage
 
             if(poc > 0)
             {
-                Constants.print("REMOVE FROM INV ID:", en.getKey(), "IN:", inv.contains(en.getKey()), "POC:", poc - Math.max(0, poc-en.getValue()));
                 inv.remove(en.getKey(), poc - Math.max(0, poc-en.getValue()));
                 en.setValue(Math.max(0, en.getValue()-poc));
                 status += hod - en.getValue();
             }
-
-            Constants.print("Checkujem ulohu item:", en.getKey(), "pocetZostava:", en.getValue(), "mam:", inv.contains(en.getKey()));
         }
         checkComplete();
     }
@@ -127,7 +117,6 @@ public class Stage
 
         for(int i = uloha.size()-1; i >= 0; i--)
         {
-            Constants.print("REMOVE QUEST I:", i, "REM:", rem, "SIZE:", uloha.size());
             if(val[i] <= 0)
             {
                 uloha.remove(itm[i]);
@@ -161,5 +150,17 @@ public class Stage
     public float getR()
     {
         return stageLocationR;
+    }
+
+    public void drawQuest(Graphics g)
+    {
+        Integer[] itm = new Integer[uloha.size()]; uloha.keySet().toArray(itm);
+        Integer[] val = new Integer[uloha.size()]; uloha.values().toArray(val);
+
+        g.drawString("Zozbieraj este:", 10, 25);
+        for(int i = 0; i < uloha.size(); i++)
+        {
+            g.drawString(Stack.typToString(itm[i])+": "+val[i], 13, 40+15*i);
+        }
     }
 }

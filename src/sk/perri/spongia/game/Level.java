@@ -218,6 +218,8 @@ public class Level implements KeyListener
                     stages.get(Math.min(stages.size()-1, stagesComplete)).getR(),
                     stages.get(Math.min(stages.size()-1, stagesComplete)).getR());
         }
+
+        stages.get(Math.min(stages.size(), stagesComplete)).drawQuest(g);
     }
 
     @Override

@@ -102,14 +102,11 @@ public class Inventory
     public Vector<Entit> remove(int type, int count)
     {
         Vector<Entit> res = new Vector<>();
-        Constants.print("REMOVE INV isIn:", isIn, "no of stacks:", stacky.size());
         for(int i = isIn - 1 ; i >= 0; i--)
         {
-            Constants.print("INSIDE TYP I:", i, "TYP:", inside.get(i).getTyp());
             if(inside.get(i).getTyp() == type)
             {
                 res.add(inside.get(i));
-                Constants.print("REMOVE INV, next item, size:", res.size());
             }
 
             if(res.size() >= count)
@@ -118,7 +115,6 @@ public class Inventory
 
         inside.removeAll(res);
         isIn = inside.size();
-        Constants.print("REMOVE INV, removed:", res.size(), "isIn:", isIn);
 
         stacky.stream().filter(s -> s.typ == type).forEach(s -> s.remove(count));
         for(int i = 0; i < stacky.size(); i++)
