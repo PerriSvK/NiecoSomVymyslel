@@ -26,6 +26,7 @@ public class Constants
     public static final int CONTROL_SPEED = Input.KEY_LCONTROL;
     public static final int CONTROL_RESET = Input.KEY_R;
     public static final int CONTROL_USE = Input.KEY_E;
+    public static final int CONTROL_RESET_INV = Input.KEY_I;
 
     public static void print(Object... o)
     {

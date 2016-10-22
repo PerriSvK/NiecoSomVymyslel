@@ -24,6 +24,7 @@ public class Level implements KeyListener
     private int keyState = 0;
     private boolean boosted = false;
     private boolean ePressed = false;
+    private boolean resetInv = false;
     private float time = 0;
     public Level(String mapName)
     {
@@ -84,6 +85,12 @@ public class Level implements KeyListener
         if(ePressed)
         {
             checkCollisions();
+        }
+
+        if(resetInv && !ja.getInv().isEmpty())
+        {
+            resetInv = false;
+            ja.getInv().clear();
         }
 
         camera.update();
@@ -175,6 +182,7 @@ public class Level implements KeyListener
             case Constants.CONTROL_LEFT: keyState -= 3; break;
             case Constants.CONTROL_SPEED: boosted = true; break;
             case Constants.CONTROL_USE: ePressed = true; break;
+            case Constants.CONTROL_RESET_INV: resetInv = true; break;
         }
     }
 

@@ -11,7 +11,7 @@ public class Main extends BasicGame
     private Level level;
     private int gameState = 0; //0 = main menu, 1 = controls, 2 = authors, 3 = playGame
     private boolean startGame = false;
-    private Image playButton, conButton, creButton;
+    private Image playButton, conButton, creButton, menuImg;
     private Rectangle playButtonRect, conButtonRect, creButtonRect;
     private Circle mouseCircle;
 
@@ -24,11 +24,12 @@ public class Main extends BasicGame
     public void init(GameContainer container) throws SlickException
     {
         playButton = new Image(Constants.ASSETS_PATH+"playButton.png");
-        playButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 50, playButton.getWidth(), playButton.getHeight());
+        playButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 100, playButton.getWidth(), playButton.getHeight());
         conButton = new Image(Constants.ASSETS_PATH+"controlButton.png");
-        conButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 200, playButton.getWidth(), playButton.getHeight());
+        conButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 250, playButton.getWidth(), playButton.getHeight());
         creButton = new Image(Constants.ASSETS_PATH+"creditsButton.png");
-        creButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 450, playButton.getWidth(), playButton.getHeight());
+        creButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 400, playButton.getWidth(), playButton.getHeight());
+        menuImg = new Image(Constants.ASSETS_PATH+"map7.png");
         mouseCircle = new Circle(0, 0, 1);
     }
 
@@ -39,6 +40,7 @@ public class Main extends BasicGame
         creButtonRect = null;
         mouseCircle = null;
         level = new Level("map3");
+        getClass().getResource("r1");
     }
 
     @Override
@@ -93,6 +95,8 @@ public class Main extends BasicGame
 
     private void drawMenu(Graphics g)
     {
+        g.setBackground(Color.cyan);
+        menuImg.draw(Constants.WINDOW_WIDTH/2-menuImg.getWidth()/6.5f,Constants.WINDOW_HEIGHT-menuImg.getHeight()/3.5f, 0.3f);
         playButton.draw(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 100);
         conButton.draw(Constants.WINDOW_WIDTH/2-conButton.getWidth()/2, 250);
         creButton.draw(Constants.WINDOW_WIDTH/2-creButton.getWidth()/2, 400);
@@ -100,25 +104,25 @@ public class Main extends BasicGame
 
     private void drawControls(Graphics g)
     {
-        g.setLineWidth(20);
-        g.drawString("Pohyb: W - dopredu, S - dozadu, A/D - do strán", Constants.WINDOW_WIDTH/2-50, 100);
-        g.drawString("E - Interakcia, R - Reset levelu", Constants.WINDOW_WIDTH/2-40, 150);
-        g.drawString("I - vyčistenie inventáru, ESC - Hlavné menu", Constants.WINDOW_WIDTH/2-48, 200);
+        g.setColor(Color.black);
+        g.drawString("Pohyb: W - dopredu, S - dozadu, A/D - do stran", Constants.WINDOW_WIDTH/2-200, 275);
+        g.drawString("E - Interakcia, R - Reset levelu", Constants.WINDOW_WIDTH/2-150, 300);
+        g.drawString("I - vycistenie inventaru, ESC - Hlavne menu", Constants.WINDOW_WIDTH/2-180, 325);
     }
 
     private void drawCredits(Graphics g)
     {
-        g.setLineWidth(20);
-        g.drawString("NiečoSomVymyslel TÍM", Constants.WINDOW_WIDTH/2-20, 50);
-        g.drawString("Grafika: Samuel Zeman", Constants.WINDOW_WIDTH/2-25, 100);
-        g.drawString("Kód: Adam \"Perri\"Perinay", Constants.WINDOW_WIDTH/2-30, 150);
-        g.drawString("Animácie, Web: Jakub Vacula", Constants.WINDOW_WIDTH/2-25, 200);
-        g.drawString("Zvukové efekty: Juraj Vašut", Constants.WINDOW_WIDTH/2-25, 250);
+        g.setColor(Color.black);
+        g.drawString("NiecoSomVymyslel TÍM", Constants.WINDOW_WIDTH/2-100, 250);
+        g.drawString("Grafika: Samuel Zeman", Constants.WINDOW_WIDTH/2-100, 275);
+        g.drawString("Kod: Adam \"Perri\" Perinay", Constants.WINDOW_WIDTH/2-120, 300);
+        g.drawString("Animacie, Web: Jakub Vacula", Constants.WINDOW_WIDTH/2-120, 325);
+        g.drawString("Zvukové efekty: Juraj Vašut", Constants.WINDOW_WIDTH/2-120, 350);
     }
 
     public static void main(String[] args) throws SlickException
     {
-        AppGameContainer app = new AppGameContainer(new Main("NiecoSomNakodil"));
+        AppGameContainer app = new AppGameContainer(new Main("NiecoSomNakodil v0.1"));
 
         app.setDisplayMode(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, false);
         app.setVSync(true);
