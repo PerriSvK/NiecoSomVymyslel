@@ -3,11 +3,14 @@ package sk.perri.spongia.veci;
 import org.newdawn.slick.Graphics;
 import sk.perri.spongia.utils.Constants;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class Inventory
 {
-    private Vector<Entit> inside = new Vector<>();
+    private Vector<Vec> inside = new Vector<>();
     private int isIn = 0;
     private int capacity;
     private Vector<Stack> stacky = new Vector<>();
@@ -54,6 +57,22 @@ public class Inventory
         return true;
     }
 
+    public int contains(int itemTyp)
+    {
+        for(Stack s : stacky)
+        {
+            if(s.typ == itemTyp)
+                return s.pocet;
+        }
+
+        return 0;
+    }
+
+    public Set<Integer> contains(Set<Integer> itemTyp)
+    {
+        return itemTyp.stream().map(this::contains).collect(Collectors.toSet());
+    }
+
     public boolean isFull()
     {
         return isIn >= capacity;
@@ -83,28 +102,36 @@ public class Inventory
     public Vector<Entit> remove(int type, int count)
     {
         Vector<Entit> res = new Vector<>();
-        for(int i = 0; i < isIn; i++)
+        Constants.print("REMOVE INV isIn:", isIn, "no of stacks:", stacky.size());
+        for(int i = isIn - 1 ; i >= 0; i--)
         {
-            if(inside.get(i).typ == type)
+            Constants.print("INSIDE TYP I:", i, "TYP:", inside.get(i).getTyp());
+            if(inside.get(i).getTyp() == type)
             {
                 res.add(inside.get(i));
-                inside.remove(i);
+                Constants.print("REMOVE INV, next item, size:", res.size());
             }
 
             if(res.size() >= count)
                 break;
         }
 
-        isIn -= res.size();
+        inside.removeAll(res);
+        isIn = inside.size();
+        Constants.print("REMOVE INV, removed:", res.size(), "isIn:", isIn);
 
         stacky.stream().filter(s -> s.typ == type).forEach(s -> s.remove(count));
-
+        for(int i = 0; i < stacky.size(); i++)
+        {
+            if(stacky.get(i).pocet <= 0)
+                stacky.remove(i);
+        }
         return res;
     }
 
     public void drawStatus(Graphics g)
     {
-        g.drawString("Invetntory: "+Integer.toString(isIn)+"/"+Integer.toString(capacity), Constants.WINDOW_WIDTH - 150, 10);
+        g.drawString("Invetntory: "+Integer.toString(isIn)+"/"+Integer.toString(capacity), Constants.WINDOW_WIDTH - 160, 10);
         for(int i = 0; i < stacky.size(); i++)
         {
             Stack s = stacky.get(i);

@@ -1,9 +1,7 @@
 package sk.perri.spongia.veci;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.opengl.InternalTextureLoader;
 import sk.perri.spongia.utils.Camera;
 import sk.perri.spongia.utils.Constants;
 
