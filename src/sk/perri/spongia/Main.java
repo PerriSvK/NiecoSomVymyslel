@@ -35,6 +35,8 @@ public class Main extends BasicGame
     public void startGame()
     {
         playButtonRect = null;
+        conButtonRect = null;
+        creButtonRect = null;
         mouseCircle = null;
         level = new Level("map3");
     }
@@ -42,6 +44,13 @@ public class Main extends BasicGame
     @Override
     public void update(GameContainer container, int delta) throws SlickException
     {
+        if(container.getInput().isKeyPressed(Input.KEY_ESCAPE) && gameState != 0)
+        {
+            gameState = 0;
+            level = null;
+            init(container);
+        }
+
         if(gameState == 3)
         {
             level.update(container, delta);
