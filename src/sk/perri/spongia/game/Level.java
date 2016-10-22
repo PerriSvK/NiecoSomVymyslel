@@ -50,8 +50,8 @@ public class Level implements KeyListener
 
         //stages
         stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
-        stages.get(0).addUloha(Vec.DREVO, 5);
-        stages.get(0).addUloha(Vec.ZELEZO, 5);
+        stages.get(0).addUloha(Vec.DREVO, 10);
+        stages.get(0).addUloha(Vec.ZELEZO, 10);
         stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
         stages.get(1).addUloha(Vec.ZELEZO, 40);
         stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
