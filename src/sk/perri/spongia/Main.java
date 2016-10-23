@@ -23,12 +23,12 @@ public class Main extends BasicGame
     @Override
     public void init(GameContainer container) throws SlickException
     {
-        playButton = new Image(Constants.ASSETS_PATH+"playButton.png");
-        playButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 100, playButton.getWidth(), playButton.getHeight());
-        conButton = new Image(Constants.ASSETS_PATH+"controlButton.png");
+        playButton = new Image(Constants.ASSETS_PATH+"novahra.png");
+        playButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 80, playButton.getWidth(), playButton.getHeight());
+        conButton = new Image(Constants.ASSETS_PATH+"ovladaniemenu.png");
         conButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 250, playButton.getWidth(), playButton.getHeight());
-        creButton = new Image(Constants.ASSETS_PATH+"creditsButton.png");
-        creButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 400, playButton.getWidth(), playButton.getHeight());
+        creButton = new Image(Constants.ASSETS_PATH+"tvorcovia.png");
+        creButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 420, playButton.getWidth(), playButton.getHeight());
         menuImg = new Image(Constants.ASSETS_PATH+"map7.png");
         mouseCircle = new Circle(0, 0, 1);
     }
@@ -39,7 +39,7 @@ public class Main extends BasicGame
         conButtonRect = null;
         creButtonRect = null;
         mouseCircle = null;
-        level = new Level("map3");
+        level = new Level("ostrov5");
         getClass().getResource("r1");
     }
 
@@ -97,9 +97,9 @@ public class Main extends BasicGame
     {
         g.setBackground(Color.cyan);
         menuImg.draw(Constants.WINDOW_WIDTH/2-menuImg.getWidth()/6.5f,Constants.WINDOW_HEIGHT-menuImg.getHeight()/3.5f, 0.3f);
-        playButton.draw(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 100);
+        playButton.draw(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 80);
         conButton.draw(Constants.WINDOW_WIDTH/2-conButton.getWidth()/2, 250);
-        creButton.draw(Constants.WINDOW_WIDTH/2-creButton.getWidth()/2, 400);
+        creButton.draw(Constants.WINDOW_WIDTH/2-creButton.getWidth()/2, 420);
     }
 
     private void drawControls(Graphics g)

@@ -1,12 +1,10 @@
 package sk.perri.spongia.game;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.gui.AbstractComponent;
 import sk.perri.spongia.utils.Camera;
 import sk.perri.spongia.utils.Constants;
-import sk.perri.spongia.veci.Clovek;
-import sk.perri.spongia.veci.Entit;
-import sk.perri.spongia.veci.Spawn;
-import sk.perri.spongia.veci.Vec;
+import sk.perri.spongia.veci.*;
 
 import java.util.Vector;
 
@@ -15,7 +13,8 @@ public class Level implements KeyListener
     private Image dataT, bgT;
     private Clovek ja;
     private Camera camera;
-    private Spawn spawn, spawn1;
+    //private Spawn spawn, spawn1;
+    private Spawner spawnDrevo, spawnZelezo;
     private Vector<Vec> vec = new Vector<>();
     private Vector<Stage> stages = new Vector<>();
     private Vector<Image> raketa = new Vector<>();
@@ -44,10 +43,12 @@ public class Level implements KeyListener
 
         ja = new Clovek((int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(800*Constants.SCALE_MAP), "ROBOTIK", "r", 8);
         camera = new Camera(ja);
-        spawn = new Spawn(Vec.DREVO, (int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(900*Constants.SCALE_MAP),
+        /*spawn = new Spawn(Vec.DREVO, (int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(900*Constants.SCALE_MAP),
                 (int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(1000*Constants.SCALE_MAP), 4000);
         spawn1 = new Spawn(Vec.ZELEZO, (int)Math.round(1600*Constants.SCALE_MAP), (int) Math.round(900*Constants.SCALE_MAP),
-                (int)Math.round(1700*Constants.SCALE_MAP), (int) Math.round(1000*Constants.SCALE_MAP), 4000);
+                (int)Math.round(1700*Constants.SCALE_MAP), (int) Math.round(1000*Constants.SCALE_MAP), 4000);*/
+        spawnDrevo = new Spawner(Color.green, Vec.DREVO);
+        spawnZelezo = new Spawner(Color.magenta, Vec.ZELEZO);
 
         //stages
         stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
@@ -85,6 +86,10 @@ public class Level implements KeyListener
         if(ePressed)
         {
             checkCollisions();
+            Constants.print("Check color at x:", (int)Math.round(ja.getX()/Constants.SCALE_MAP), "y:",
+                    (int)Math.round(ja.getY()/Constants.SCALE_MAP));
+            checkSpawners(dataT.getColor((int)Math.round(ja.getX()/Constants.SCALE_MAP),
+                    (int)Math.round(ja.getY()/Constants.SCALE_MAP)));
         }
 
         if(resetInv && !ja.getInv().isEmpty())
@@ -95,7 +100,7 @@ public class Level implements KeyListener
 
         camera.update();
 
-        Vec v = spawn.update(delta);
+        /*Vec v = spawn.update(delta);
         if(v != null)
         {
             vec.add(v);
@@ -107,7 +112,7 @@ public class Level implements KeyListener
         {
             vec.add(v);
             v = null;
-        }
+        }*/
 
         if(stages.get(stagesComplete).isIn(ja.getX(), ja.getY()))
         {
@@ -127,6 +132,19 @@ public class Level implements KeyListener
             Constants.print("time:", time);
 
         time += delta/(float)1000;
+    }
+
+    private void checkSpawners(Color col)
+    {
+        if(spawnDrevo.isIn(col) != -1)
+        {
+            ja.getInv().add(new Vec(0, 0, Vec.DREVO, "drevo.png"));
+        }
+
+        if(spawnZelezo.isIn(col) != -1)
+        {
+            ja.getInv().add(new Vec(0, 0, Vec.ZELEZO, "zelezo.png"));
+        }
     }
 
     public void checkCollisions()
@@ -160,13 +178,13 @@ public class Level implements KeyListener
             if(tx < 0 || tx > dataT.getWidth() || ty < 0 || ty > dataT.getHeight())
                 return false;
 
-            if(!dataT.getColor(tx, ty).equals(Color.black))
+            if(dataT.getColor(tx, ty).equals(Color.red) || dataT.getColor(tx, ty).equals(Color.blue))
             {
-
                 vys = false;
                 break;
             }
         }
+
         return vys;
     }
 
@@ -219,7 +237,7 @@ public class Level implements KeyListener
                     stages.get(Math.min(stages.size()-1, stagesComplete)).getR());
         }
 
-        stages.get(Math.min(stages.size(), stagesComplete)).drawQuest(g);
+        stages.get(Math.min(stages.size()-1, stagesComplete)).drawQuest(g);
     }
 
     @Override
