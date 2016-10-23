@@ -14,6 +14,7 @@ public class Main extends BasicGame
     private Image playButton, conButton, creButton, menuImg;
     private Rectangle playButtonRect, conButtonRect, creButtonRect;
     private Circle mouseCircle;
+    private Sound sound;
 
     public Main(String name)
     {
@@ -31,6 +32,8 @@ public class Main extends BasicGame
         creButtonRect = new Rectangle(Constants.WINDOW_WIDTH/2-playButton.getWidth()/2, 420, playButton.getWidth(), playButton.getHeight());
         menuImg = new Image(Constants.ASSETS_PATH+"map7.png");
         mouseCircle = new Circle(0, 0, 1);
+        sound = new Sound(Constants.ASSETS_PATH+"hudbas.ogg");
+        sound.loop(1, 0.1f);
     }
 
     public void startGame()
@@ -55,6 +58,11 @@ public class Main extends BasicGame
 
         if(gameState == 3)
         {
+            if(container.getInput().isKeyPressed(Input.KEY_R))
+            {
+                level = null;
+                level = new Level("ostrov5");
+            }
             level.update(container, delta);
         }
         else
@@ -122,7 +130,7 @@ public class Main extends BasicGame
 
     public static void main(String[] args) throws SlickException
     {
-        AppGameContainer app = new AppGameContainer(new Main("NiecoSomNakodil v0.1"));
+        AppGameContainer app = new AppGameContainer(new Main("Escape from Axos v0.1"));
 
         app.setDisplayMode(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT, false);
         app.setVSync(true);

@@ -46,6 +46,9 @@ public class Stack
         {
             case Vec.DREVO: return "DREVO";
             case Vec.ZELEZO: return "ZELEZO";
+            case Vec.BETON: return "BETON";
+            case Vec.CLOVEK: return "CLOVEK";
+            case Vec.PALIVO: return "PALIVO";
             default: return "NEZNAME";
         }
     }

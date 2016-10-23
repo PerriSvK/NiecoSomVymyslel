@@ -1,7 +1,7 @@
 package sk.perri.spongia.game;
 
+import com.sun.xml.internal.messaging.saaj.soap.ImageDataContentHandler;
 import org.newdawn.slick.*;
-import org.newdawn.slick.gui.AbstractComponent;
 import sk.perri.spongia.utils.Camera;
 import sk.perri.spongia.utils.Constants;
 import sk.perri.spongia.veci.*;
@@ -10,11 +10,11 @@ import java.util.Vector;
 
 public class Level implements KeyListener
 {
-    private Image dataT, bgT;
+    private Image dataT, bgT, vyh, preh;
     private Clovek ja;
     private Camera camera;
     //private Spawn spawn, spawn1;
-    private Spawner spawnDrevo, spawnZelezo;
+    private Spawner spawnDrevo, spawnZelezo, spawnBeton, spawnPalivo, spawnClovek;
     private Vector<Vec> vec = new Vector<>();
     private Vector<Stage> stages = new Vector<>();
     private Vector<Image> raketa = new Vector<>();
@@ -25,10 +25,16 @@ public class Level implements KeyListener
     private boolean ePressed = false;
     private boolean resetInv = false;
     private float time = 0;
+    private float timeleft = Constants.TIME_LIMIT;
+    private int gameStatus = 0; //0 = playing the game, 1 = game over, 2 = you win
+    private String mapName;
     public Level(String mapName)
     {
+        this.mapName = mapName;
         try
         {
+            vyh = new Image(Constants.ASSETS_PATH+"vyhra.png");
+            preh = new Image(Constants.ASSETS_PATH+"prehra.png");
             dataT = new Image(Constants.ASSETS_PATH+mapName+"Data.png");
             bgT = new Image(Constants.ASSETS_PATH+mapName+".png");
             raketa.add(new Image(Constants.ASSETS_PATH+"rak1.png"));
@@ -49,19 +55,31 @@ public class Level implements KeyListener
                 (int)Math.round(1700*Constants.SCALE_MAP), (int) Math.round(1000*Constants.SCALE_MAP), 4000);*/
         spawnDrevo = new Spawner(Color.green, Vec.DREVO);
         spawnZelezo = new Spawner(Color.magenta, Vec.ZELEZO);
+        spawnBeton = new Spawner(Color.cyan, Vec.BETON);
+        spawnClovek = new Spawner(Color.pink, Vec.CLOVEK);
+        spawnPalivo = new Spawner(Color.orange, Vec.PALIVO);
 
         //stages
-        stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
+        stages.add(new Stage(2492*Constants.SCALE_MAP, 1172*Constants.SCALE_MAP, 150, true, camera));
         stages.get(0).addUloha(Vec.DREVO, 10);
         stages.get(0).addUloha(Vec.ZELEZO, 10);
-        stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
+        stages.get(0).addUloha(Vec.BETON, 10);
+        stages.add(new Stage(2492*Constants.SCALE_MAP, 1172*Constants.SCALE_MAP, 150, true, camera));
         stages.get(1).addUloha(Vec.ZELEZO, 40);
-        stages.add(new Stage(2612*Constants.SCALE_MAP, 1164*Constants.SCALE_MAP, 100, true, camera));
+        stages.add(new Stage(2492*Constants.SCALE_MAP, 1172*Constants.SCALE_MAP, 150, true, camera));
         stages.get(2).addUloha(Vec.ZELEZO, 50);
+        stages.add(new Stage(2492*Constants.SCALE_MAP, 1172*Constants.SCALE_MAP, 150, true, camera));
+        stages.get(3).addUloha(Vec.PALIVO, 30);
+        stages.add(new Stage(2492*Constants.SCALE_MAP, 1172*Constants.SCALE_MAP, 150, true, camera));
+        stages.get(4).addUloha(Vec.CLOVEK, 11);
     }
 
     public void update(GameContainer gc, long delta)
     {
+        if(gameStatus != 0)
+            return;
+
+        spawnDrevo.updateMinihra(gc);
         gc.getInput().addKeyListener(this);
         int ang = -1;
         switch (keyState)
@@ -114,23 +132,30 @@ public class Level implements KeyListener
             v = null;
         }*/
 
-        if(stages.get(stagesComplete).isIn(ja.getX(), ja.getY()))
+        if(stages.get(Math.min(stages.size() - 1, stagesComplete)).isIn(ja.getX(), ja.getY()))
         {
-            stages.get(stagesComplete).completeUloha(ja.getInv());
+            stages.get(Math.min(stages.size() - 1, stagesComplete)).completeUloha(ja.getInv());
         }
 
-        if(stages.get(stagesComplete).isCompleted())
+        if(stages.get(Math.min(stages.size() - 1,stagesComplete)).isCompleted())
         {
-            stages.get(stagesComplete).deactivate();
+            stages.get(Math.min(stages.size() - 1,stagesComplete)).deactivate();
             raketaStupen = Math.min(raketa.size()-1, stagesComplete);
             stagesComplete++;
             Constants.print("STAGE", stagesComplete, "COMPLETED!------------------------------------------------------",
                     raketaStupen);
+
+            if(stagesComplete == stages.size())
+            {
+                gameStatus = 2;
+            }
         }
 
         if(Math.floor(time + delta / (float)1000) > Math.floor(time))
             Constants.print("time:", time);
-
+        timeleft -= delta;
+        if(timeleft <= 0)
+            gameStatus = 1;
         time += delta/(float)1000;
     }
 
@@ -144,6 +169,21 @@ public class Level implements KeyListener
         if(spawnZelezo.isIn(col) != -1)
         {
             ja.getInv().add(new Vec(0, 0, Vec.ZELEZO, "zelezo.png"));
+        }
+
+        if(spawnBeton.isIn(col) != -1)
+        {
+            ja.getInv().add(new Vec(0, 0, Vec.BETON, "zelezo.png"));
+        }
+
+        if(spawnPalivo.isIn(col) != -1)
+        {
+            ja.getInv().add(new Vec(0, 0, Vec.PALIVO, "zelezo.png"));
+        }
+
+        if(spawnClovek.isIn(col) != -1)
+        {
+            ja.getInv().add(new Vec(0, 0, Vec.CLOVEK, "zelezo.png"));
         }
     }
 
@@ -198,7 +238,7 @@ public class Level implements KeyListener
             case Constants.CONTROL_DOWN: keyState -= 1; break;
             case Constants.CONTROL_RIGHT: keyState += 3; break;
             case Constants.CONTROL_LEFT: keyState -= 3; break;
-            case Constants.CONTROL_SPEED: boosted = true; break;
+            //case Constants.CONTROL_SPEED: boosted = true; break;
             case Constants.CONTROL_USE: ePressed = true; break;
             case Constants.CONTROL_RESET_INV: resetInv = true; break;
         }
@@ -214,18 +254,28 @@ public class Level implements KeyListener
             case Constants.CONTROL_RIGHT: keyState -= 3; break;
             case Constants.CONTROL_LEFT: keyState += 3; break;
             case Constants.CONTROL_SPEED: boosted = false; break;
-            case Constants.CONTROL_RESET: ja.setPos((int)Math.round(1500*Constants.SCALE_MAP), (int) Math.round(800*Constants.SCALE_MAP)); camera.update(); break;
             case Constants.CONTROL_USE: ePressed = false; break;
         }
     }
 
     public void render(Graphics g)
     {
+        if(gameStatus == 2)
+        {
+            vyh.draw(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+            return;
+        }
+        else if(gameStatus == 1)
+        {
+            preh.draw(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+            return;
+        }
+
         bgT.draw(-camera.getX(), -camera.getY(), Constants.SCALE_MAP);
         for(Vec v : vec)
             v.render(camera);
 
-        stages.get(0).draw();
+        //stages.get(0).draw();
         ja.render(camera);
         ja.getInv().drawStatus(g);
 
@@ -238,6 +288,22 @@ public class Level implements KeyListener
         }
 
         stages.get(Math.min(stages.size()-1, stagesComplete)).drawQuest(g);
+        if(timeleft < 10020)
+        {
+            g.setColor(Color.red);
+        }
+        else if(timeleft < 30020)
+        {
+            g.setColor(Color.orange);
+        }
+
+        g.drawString("Cas do narazu: "+Double.toString((double)Math.round(timeleft/10)/100), 90, 10);
+        g.setColor(Color.white);
+    }
+
+    private void drawWin(Graphics g)
+    {
+
     }
 
     @Override
